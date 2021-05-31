@@ -1,6 +1,6 @@
 let width = 512;
 let height = 512;
-let newColor = "#FFFFFF";
+let newColor = "#000099";
 
 let body = d3.select("body")
     .on("keydown", function () {
