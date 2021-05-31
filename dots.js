@@ -1,6 +1,6 @@
 let width = 512;
 let height = 512;
-let newColor = "#000099";
+let newColor = "#FFFFFF";
 
 let body = d3.select("body")
     .on("keydown", function () {
@@ -11,7 +11,7 @@ let body = d3.select("body")
                 break;
             case 66: newColor = "#000099";
                 break;
-            default: newColor = "#999999";
+            default: newColor = "#000099";
                 break;
         }
         console.log(d3.event.keyCode);
