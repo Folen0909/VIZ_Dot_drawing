@@ -1,0 +1,29 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    font-size: 14px;
+    font-family: "Helvetica Neue", Helvetica, Arial, Sans-serif;
+    font-weight: 300;
+    text-align: center;
+    cursor: default;
+}
+
+div {
+    cursor: inherit;
+}
+
+#center {
+    position: relative;
+    height: 100%;
+    width: 512px;
+    margin: 0 auto;
+}
+
+#dots {
+    position: relative;
+    top: 25%;
+    height: 100%;
+    width: 512px;
+    margin: 0 auto;
+}
