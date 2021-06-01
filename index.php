@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
 
     <div id="color-picker">
         <ul>
