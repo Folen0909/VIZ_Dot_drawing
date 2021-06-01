@@ -2,6 +2,7 @@ let width = 512;
 let height = 512;
 let newColor = "#FFFFFF";
 let duration = 1000;
+let history = [];
 
 let curentColor = d3.select("#current-color")
     .text(`Current color: ${newColor}.`);
@@ -33,18 +34,24 @@ let svg = d3.select("#dots")
 let firstCircle = svg.append("circle")
     .attr("cx", width / 2)
     .attr("cy", height / 2)
-    .attr("r", width / 2)
     .attr("fill-opacity", 1)
     .attr("fill", "#FFFFFF")
     .attr("stroke", "#000000")
     .on("click", function (d) {
         split(d3.select(this));
-    });
+    })
+    .attr("r", width / 2);
 
 function split(circle) {
-    let centerX = parseInt(circle.attr("cx"));
-    let centerY = parseInt(circle.attr("cy"));
-    let r = parseInt(circle.attr("r"));
+    let details = {
+        cx: parseInt(circle.attr("cx")),
+        cy: parseInt(circle.attr("cy")),
+        r: parseInt(circle.attr("r")),
+        color: circle.attr("fill")
+    }
+
+    history.push(details);
+
     circle.transition()
         .duration(duration)
         .attr("r", 0)
@@ -53,65 +60,23 @@ function split(circle) {
 
     delete circle;
 
-    svg.append("circle")
-        .attr("cx", centerX - r / 2)
-        .attr("cy", centerY - r / 2)
-        .attr("fill-opacity", 1)
-        .attr("fill", newColor)
-        .on("click", function (d) {
-            if (checkSize(r)) {
-                split(d3.select(this));
-            }
-        })
-        .attr("r", 0)
-        .transition()
-        .duration(duration)
-        .attr("r", r / 2);
-
-    svg.append("circle")
-        .attr("cx", centerX + r / 2)
-        .attr("cy", centerY - r / 2)
-        .attr("fill-opacity", 1)
-        .attr("fill", newColor)
-        .on("click", function (d) {
-            if (checkSize(r)) {
-                split(d3.select(this));
-            }
-        })
-        .attr("r", 0)
-        .transition()
-        .duration(duration)
-        .attr("r", r / 2);
-
-    svg.append("circle")
-        .attr("cx", centerX - r / 2)
-        .attr("cy", centerY + r / 2)
-        .attr("fill-opacity", 1)
-        .attr("fill", newColor)
-        .on("click", function (d) {
-            if (checkSize(r)) {
-                split(d3.select(this));
-            };
-        })
-        .attr("r", 0)
-        .transition()
-        .duration(duration)
-        .attr("r", r / 2);
-
-    svg.append("circle")
-        .attr("cx", centerX + r / 2)
-        .attr("cy", centerY + r / 2)
-        .attr("fill-opacity", 1)
-        .attr("fill", newColor)
-        .on("click", function (d) {
-            if (checkSize(r)) {
-                split(d3.select(this));
-            }
-        })
-        .attr("r", 0)
-        .transition()
-        .duration(duration)
-        .attr("r", r / 2);
+    for (let i = 0; i < 4; i++) {
+        svg.append("circle")
+            .attr("cx", details.cx - (details.r / 2) * ((i == 0 || i == 1) ? 1 : -1))
+            .attr("cy", details.cy - (details.r / 2) * ((i == 0 || i == 2) ? 1 : -1))
+            .attr("fill-opacity", 1)
+            .attr("fill", newColor)
+            .on("click", function (d) {
+                if (checkSize(details.r)) {
+                    split(d3.select(this));
+                }
+            })
+            .attr("r", 0)
+            .transition()
+            .duration(duration)
+            .attr("r", details.r / 2);
+    }
+    console.log(d3.selectAll("circle"));
 }
 
 function checkSize(r) {
@@ -125,9 +90,36 @@ function switchColor(color) {
 
 function backgroundColorChange() {
     body.style("background-color", d3.select("#backgroundColor").property("value"));
+    console.log(d3.selectAll("circle")[0]);
 }
 
-function playback() {
-    circles = d3.selectAll("circle")[0];
-    console.log(circles);
+function redo() {
+    if (d3.selectAll("circle")[0].length > 1) {
+        let circles = d3.selectAll("circle")[0];
+        console.log(circles);
+        for (let i = 1; i < 5; i++) {
+            d3.select(circles[circles.length - i]).transition()
+                .duration(duration)
+                .attr("r", 0)
+                .style("opacity", 0)
+                .remove();
+        }
+
+        svg.append("circle")
+            .attr("cx", history[history.length - 1].cx)
+            .attr("cy", history[history.length - 1].cy)
+            .attr("fill-opacity", 1)
+            .attr("fill", newColor)
+            .on("click", function (d) {
+                if (checkSize(history[history.length - 1].r)) {
+                    split(d3.select(this));
+                }
+            })
+            .attr("r", 0)
+            .transition()
+            .duration(duration)
+            .attr("r", history[history.length - 1].r);
+
+        history.pop();
+    }
 }
