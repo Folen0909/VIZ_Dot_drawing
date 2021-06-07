@@ -12,13 +12,7 @@ let mouseClickPositions = [];
 let isReplay = false;
 let inter;
 
-constraints.startX = getStartingPosition(document.getElementById("dots")).x;
-constraints.startY = getStartingPosition(document.getElementById("dots")).y + 30;
-constraints.endX = constraints.startX + 512;
-constraints.endY = constraints.startY + 512 + 30;
-
-console.log(constraints);
-
+setConstraints();
 
 let selectedColor = d3.select("#selectedColor", currentColor);
 
@@ -99,6 +93,22 @@ function checkSize(r) {
     return r / 2 > width / 256;
 }
 
+function backgroundColorChange() {
+    body.style("background-color", d3.select("#backgroundColor").property("value"));
+}
+
+function switchColor(color) {
+    currentColor = color;
+    d3.select("#selectedColor").property("value", currentColor);
+}
+
+function setConstraints() {
+    constraints.startX = getStartingPosition(document.getElementById("dots")).x;
+    constraints.startY = getStartingPosition(document.getElementById("dots")).y + 30;
+    constraints.endX = constraints.startX + 512;
+    constraints.endY = constraints.startY + 512 + 30;
+}
+
 function addMouseClickPosition(data) {
     if (!isReplay) {
         let position = {
@@ -120,15 +130,6 @@ function getStartingPosition(element) {
         x: lx,
         y: ly
     };
-}
-
-function switchColor(color) {
-    currentColor = color;
-    d3.select("#selectedColor").property("value", currentColor);
-}
-
-function backgroundColorChange() {
-    body.style("background-color", d3.select("#backgroundColor").property("value"));
 }
 
 function replay() {
@@ -154,7 +155,7 @@ function replay() {
         .transition()
         .duration(duration)
         .attr("r", width / 2)
-        .on("end", function() {
+        .on("end", function () {
             inter = setInterval(playReplay, 1500)
         });
 
