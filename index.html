@@ -5,11 +5,10 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
     <title>Dots</title>
-
 </head>
 
 <body>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
 
     <div id="color-picker">
         <ul>
@@ -35,17 +34,18 @@
             </li>
             <li>
                 <label for="backgroundColor">Background color: </label>
-                <input type="color" id="backgroundColor" name="backgroundColor" onchange="backgroundColorChange()" value="#D3D3D3">
+                <input type="color" id="backgroundColor" name="backgroundColor" onchange="backgroundColorChange()"
+                    value="#D3D3D3">
             </li>
         </ul>
-        <button type="button" onclick="redo()">Redo</button>
-        <p id="current-color"></p>
+        <button id="replayButton" type="button" onclick="replay()">Replay</button>
+        <label for="selectedColor">Current selected color:</label>
+        <input disabled type="color" id="selectedColor" name="selectedColor" value="#FFFFFF">
     </div>
-    <div id="center">
-        <div id="dots">
+    <div id="dots">
 
-        </div>
     </div>
+
     <script src="dots.js"></script>
 </body>
 
