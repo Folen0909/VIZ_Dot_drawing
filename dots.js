@@ -1,6 +1,6 @@
 let width = 512;
 let height = 512;
-let currentColor = "#FFFFFF";
+let currentColor = "#000000";
 let duration = 1000;
 let constraints = {
     startX: 0,
@@ -13,26 +13,6 @@ let isReplay = false;
 let inter;
 
 setConstraints();
-
-let selectedColor = d3.select("#selectedColor", currentColor);
-
-let body = d3.select("body")
-    .on("keydown", function (event) {
-        switch (event.keyCode) {
-            case 81: switchColor(d3.select("#colorQ").property("value")); //Q
-                break;
-            case 87: switchColor(d3.select("#colorW").property("value")); //W
-                break;
-            case 69: switchColor(d3.select("#colorE").property("value")); //E
-                break;
-            case 82: switchColor(d3.select("#colorR").property("value")); //R
-                break;
-            case 84: switchColor(d3.select("#colorT").property("value")); //T
-                break;
-            default: switchColor("#FFFFFF");
-                break;
-        }
-    });
 
 let svg = d3.select("#dots")
     .append("svg")
@@ -94,12 +74,12 @@ function checkSize(r) {
 }
 
 function backgroundColorChange() {
-    body.style("background-color", d3.select("#backgroundColor").property("value"));
+    let newColor = d3.select("#backgroundColor").property("value");
+    d3.select("body").style("background-color", newColor);
 }
 
-function switchColor(color) {
-    currentColor = color;
-    d3.select("#selectedColor").property("value", currentColor);
+function drawingColorChange() {
+    currentColor = d3.select("#drawingColor").property("value");
 }
 
 function setConstraints() {
@@ -115,7 +95,7 @@ function addMouseClickPosition(data) {
             x: data.clientX - constraints.startX,
             y: data.clientY - constraints.startY,
             color: currentColor
-        }
+        };
         mouseClickPositions.push(position);
     }
 }
@@ -132,16 +112,26 @@ function getStartingPosition(element) {
     };
 }
 
-function replay() {
-    isReplay = true;
-    document.getElementById("replayButton").disabled = true;
+function changeButtonState(change) {
+    if (change) {
+        document.getElementById("replayButton").disabled = true;
+        document.getElementById("drawButton").disabled = true;
+    } else {
+        document.getElementById("replayButton").disabled = false;
+        document.getElementById("drawButton").disabled = false;
+    }
 
+}
+
+function removeAllCircles() {
     d3.selectAll("circle").transition()
         .duration(duration)
         .attr("r", 0)
         .style("opacity", 0)
         .remove();
+}
 
+function setInitialCircle(type) {
     svg.append("circle")
         .attr("cx", width / 2)
         .attr("cy", height / 2)
@@ -149,15 +139,29 @@ function replay() {
         .attr("fill", "#FFFFFF")
         .attr("stroke", "#000000")
         .on("click", function (d) {
+            addMouseClickPosition(event);
             split(d3.select(this));
         })
         .attr("r", 0)
         .transition()
         .duration(duration)
-        .attr("r", width / 2)
-        .on("end", function () {
-            inter = setInterval(playReplay, 1500)
-        });
+        .attr("r", width / 2);
+    if (type == "replay") {
+        console.log(d3.selectAll("circle"));
+        d3.selectAll("circle")
+            .on("end", function () {
+                inter = setInterval(playReplay, 1500)
+            });
+    }
+}
+
+function replay(replaying) {
+    isReplay = true;
+    changeButtonState(true);
+
+    removeAllCircles();
+
+    setInitialCircle("replay");
 
 }
 
@@ -179,6 +183,49 @@ function playReplay() {
     }
     if (mouseClickPositions.length == 0) {
         clearInterval(inter);
-        document.getElementById("replayButton").disabled = false;
+        changeButtonState(false);
     }
 }
+
+function refresh() {
+
+}
+
+
+let eyeOfSouron = [
+    {
+        x: 256,
+        y: 256,
+        color: "ffffff"
+    },
+    {
+        x: 10,
+        y: 10,
+        color: "ffffff"
+    },
+    {
+        x: 10,
+        y: 10,
+        color: "ffffff"
+    },
+    {
+        x: 10,
+        y: 10,
+        color: "ffffff"
+    },
+    {
+        x: 10,
+        y: 10,
+        color: "ffffff"
+    },
+    {
+        x: 10,
+        y: 10,
+        color: "ffffff"
+    },
+    {
+        x: 10,
+        y: 10,
+        color: "ffffff"
+    }
+];
